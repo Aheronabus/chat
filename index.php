@@ -2,7 +2,7 @@
 include "db.php";
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 	<title>Chat</title>
 	<link rel="stylesheet" type="text/css" href="estilos.css">
