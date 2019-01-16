@@ -11,7 +11,7 @@
 		$query = "INSERT INTO usuarios (usuario,contraseña,correo,permisos) values ('$usuario','$contraseña','$email',1)";
 
 		$conexion->query($query);	
-		echo "Se ha registrado con exito";
+		echo "<h1>Se ha registrado con <span style='color:#11AA00;'>exito</span></h1>";
 	} 
 
 	$conexion->close();

@@ -1,6 +1,8 @@
 <?php 
 
-	if ($_POST['boton-login']) {
+	session_start();
+
+	if (isset($_POST['boton-login'])) {
 			
 		include "db.php";
 
@@ -9,28 +11,26 @@
 
 		$consulta = mysqli_query($conexion,"SELECT * FROM usuarios WHERE (usuario = '$usuario') OR (correo = '$usuario')");
 
-		$contador = 0;
+		if(mysqli_num_rows($consulta)>0){
 
-		while ($fila = mysqli_fetch_array($consulta)){
+			$fila = mysqli_fetch_array($consulta);
 
-			$usuarioDB = $fila['usuario'];
-			$contraseñaDB = $fila['contraseña'];
-			$emailDB = $fila['correo'];
+			$usuarioBD = $fila['usuario'];
+			$contraseñaBD = $fila['contraseña'];
+			$emailBD = $fila['correo'];
 
-			if ($contraseñaDB == $contraseña) {
-				echo "Sesión iniciada";
-				header('location: chat.php');
+			if ($contraseñaBD == $contraseña) {
+				$_SESSION['user'] = $usuarioBD;
+				echo $_SESSION['user'];
+				header('location:chat.php');
 			} else {
 				echo "<p>Contraseña incorrecta para usuario: <span style='color: #740011;'>",$usuario,"</span></p>";
 				echo "<a href='index.php'>volver a inicio</a>";
 			}
-
-			$contador = $contador + 1;
-		}	
-
-		if ($contador == 0) {
+		}else
+		{
 			echo "Este usuario no existe<br>";
 			echo "<a href='index.php'>volver a inicio</a>";
-		}
+		}	
 	}
 ?>

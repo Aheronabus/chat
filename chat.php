@@ -1,5 +1,14 @@
 <?php
-include "db.php";
+	session_start();
+	include "db.php";
+
+	$sesion = $_SESSION['user'];
+
+	if ($sesion == null || $sesion == "") {
+		echo "Debes iniciar sesión para acceder al chat<br>";
+		echo "<a href='index.php'>Volver a inicio</a>";
+		die();
+	}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -31,39 +40,57 @@ include "db.php";
     <input type="checkbox" class="checkbox" id="check">
     <label class="menu" for="check">|||</label>
     <div class="left-panel">
-    	<ul>
-    		<a href="" class="itemsMenu"><li>MENU</li></a>    
-    	</ul>
+    	<div id="flotante"></div>
+    	<div id="opciones-menu">
+    		<table id="items-menu" border="2px">
+    			<tr>
+    				<td>__MENU__ chat pre-alpha 1.0</td>
+    				<td colspan="2"></td>
+    			</tr>
+    			<tr>
+    				<td class="boton-menu" onclick="window.location='logout.php'">Cerrar Sesion</td>
+    			</tr>
+    			<tr>
+    				<td class="boton-menu" onclick="window.location='vaciarchat.php'">Borrar Chat</td>
+    			</tr>
+    		</table>
+    	</div>
     </div>
 
 	<div id="contenedor">
 		<div id="caja-chat">
 			<div id="chat"></div>
 		</div>
+		
+		<div id="seccion_input">
 
-		<form method="POST" action="chat.php">
-			<input type="text" name="nombre" placeholder="Ingresa tu nombre">			
-			<textarea name="mensaje" placeholder="Ingresa tu mensaje"></textarea>
-			<input type="submit" name="enviar" value="Enviar">
-		</form>
+			<form method="POST" action="chat.php">
+				<textarea id="seccion_mensaje" name="mensaje" placeholder="Ingresa tu mensaje"></textarea>
+				<input type="submit" name="enviar" id="enviar" value="Enviar">
+			</form>
 
-		<?php
-			if (isset($_POST['enviar'])) {
+			<?php
+				if (isset($_POST['enviar'])) {
 				
-				$nombre = $_POST['nombre'];
-				$mensaje = $_POST['mensaje'];
+					$nombre = strtoupper($_SESSION['user']);
+					$mensaje = $_POST['mensaje'];
 
+					if (strlen($mensaje)>0) {
+					
+						$consulta = "INSERT INTO chat (nombre, mensaje) VALUES ('$nombre', '$mensaje')";
 
-				$consulta = "INSERT INTO chat (nombre, mensaje) VALUES ('$nombre', '$mensaje')";
+						$ejecutar = $conexion->query($consulta);
 
-				$ejecutar = $conexion->query($consulta);
-
-				if ($ejecutar) {
-					echo "<embed loop='false' src='notificacion.mp3' hidden='true' autoplay='true' width=0 height=0>";
+						if ($ejecutar) {
+							echo "<embed loop='false' src='notificacion.mp3' hidden='true' autoplay='true' width=0 height=0>";
+						}	
+					} else{
+						echo "<script>alert('El mensaje no puede estár vacio');</script>";
 				}
 			}
 
 		?>
+		</div>
 	</div>
 
 </body>
